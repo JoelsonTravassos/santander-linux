@@ -153,7 +153,7 @@ useradd joyce -c "Joyce Travassos" -s /bin/bash -m -p $(openssl passwd -1 1712)
 
 ---
 
-## Shell Script: Creating Multiple Users
+### Shell Script: Creating Multiple Users
 
 Create the script with `nano createUsers.sh`:
 
@@ -190,7 +190,7 @@ chmod +x createUsers.sh
 ```
 
 ---
-## Shell Script: Deleting Multiple Users
+### Shell Script: Deleting Multiple Users
 
 ```bash
 #!/bin/bash
@@ -267,6 +267,142 @@ useradd guest1 -c "Guest user" -s /bin/bash -m -p $(openssl passwd -1 pass123) -
 ```
 ---
 
+## Linux File Permissions
+
+### Introduction
+
+Every file and directory in Linux has **permissions** that define **who can read, write, or execute** it.
+
+Permissions are divided into three groups:
+
+1. **User (u)** – the owner of the file.
+    
+2. **Group (g)** – users who are in the same group as the file.
+    
+3. **Others (o)** – everyone else.
+
+### Numeric (Octal) Permission Values
+
+Each permission has a numeric value
+
+| **Permission** | **Symbol** | **Value** |
+| -------------- | ---------- | --------- |
+| read           | r          | 4         |
+| write          | w          | 2         |
+| execute        | x          | 1         |
+| no access      | -          | 0         |
+Each group (user, group, others) gets a number between 0–7, based on the sum of these values.
+#### Examples:
+
+##### Example 1: `chmod 755 file.sh`
+
+- **7** = `4 (r)` + `2 (w)` + `1 (x)` → `rwx` for the user (owner).
+    
+- **5** = `4 (r)` + `0 (w)` + `1 (x)` → `r-x` for the group.
+    
+- **5** = `4 (r)` + `0 (w)` + `1 (x)` → `r-x` for others.
+    
+
+So the permissions look like:
+
+`-rwxr-xr-x  file.sh`
+
+##### Example 2: `chmod 640 report.txt`
+
+- **6** = `4 + 2` → `rw-` for the user.
+    
+- **4** = `4` → `r--` for the group.
+    
+- **0** = `0` → `---` for others.
+    
+
+So:
+
+`-rw-r-----  report.txt`
+
+---
+### Understanding the permission string
+
+We can use the command `ls -l` to displays the file permission string.
+
+Exemple: `drwxr-x---`
+
+| d         | rwx   | r-x   | ---           |
+| --------- | ----- | ----- | ------------- |
+| File type | Owner | Group | Everyone Else |
+
+#### 1. **File Type (1st character):**
+
+- `d` → this is a **directory**.
+    
+- If it were `-`, it would be a **regular file**.
+    
+- Other possibilities:
+    
+    - `l` = symbolic link
+        
+    - `c` = character device
+        
+    - `b` = block device
+        
+    - `s` = socket
+        
+    - `p` = named pipe (FIFO)
+---
+#### 2. **Owner Permissions (next 3 characters):**
+
+`rwx`
+
+- `r` → read permission
+    
+- `w` → write permission
+    
+- `x` → execute permission  
+    So, the **owner** of this directory can **read, write, and execute** (i.e., enter) it.
+    
+
+---
+
+#### 3. **Group Permissions (next 3 characters):**
+
+`r-x`
+
+- `r` → read permission
+    
+- `-` → no write permission
+    
+- `x` → execute permission  
+    So, users in the **same group** can **read and enter** the directory, but **not modify** it.
+    
+
+---
+
+#### 4. **Other (everyone else) Permissions (last 3 characters):**
+
+`---`
+
+- No read, write, or execute permissions.  
+    So, **everyone else** (not the owner or in the group) **cannot do anything** with this directory.
+
+---
+### Change the directory owner and group
+
+To change the owner and the group you need to use the root user or a sudo user.
+
+`chown newOwner(userName):groupName directoryName` (e.g., `chown joel:GRP_TI TI`)
+
+Before:
+
+`drwxr-xr-x   2 root root       4096 Apr 18 16:36 TI`
+
+After:
+
+`drwxr-xr-x   2 joel GRP_TI       4096 Apr 18 16:36 TI`
+
+---
+### Change directory permission
+
+---
 ## Root User
 
 ### Set a password for the root user:
